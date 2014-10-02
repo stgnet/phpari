@@ -83,7 +83,7 @@ class phpari
      * @param $ariEndpoint
      * @return array
      */
-    private function connect($ariUsername, $ariPassword, $stasisApplication, $ariServer, $ariPort, $ariEndpoint)
+    private function connect($ariUsername, $ariPassword, $stasisApplication, $ariServer, $ariPort, $ariEndpoint, $loop = NULL)
     {
 
         try {
@@ -91,7 +91,11 @@ class phpari
             $this->ariEndpoint = new PestJSON("http://" . $ariServer . ":" . $ariPort . $ariEndpoint);
             $this->ariEndpoint->setupAuth($ariUsername, $ariPassword, "basic");
 
-            $this->stasisLoop = \React\EventLoop\Factory::create();
+			if ($loop) {
+				$this->stasisLoop = $loop;
+			} else {
+				$this->stasisLoop = \React\EventLoop\Factory::create();
+			}
 
             $this->stasisLogger = new \Zend\Log\Logger();
             $this->logWriter = new Zend\Log\Writer\Stream("php://output");
